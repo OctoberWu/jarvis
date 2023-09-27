@@ -2,9 +2,9 @@
   "name": "jarvis",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "dev": "echo \"Error: no test specified\" && exit 1"
+    "dev": "echo \"Error: run in the wrong level\" && exit 1"
   },
   "repository": {
     "type": "git",
