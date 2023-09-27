@@ -1,11 +1,10 @@
 import { NextHandleFunction } from 'connect';
-import { isJSRequest } from '../../utils';
-import { transform } from 'esbuild';
-import path from 'path';
-import { readFile } from 'fs/promises'
-import { getCodeWithSourcemap } from '../sourcemap';
+import { isCssRequest, isJSRequest } from '../../utils';
+import { readFile } from 'fs/promises';
+import { JarvisDevServer } from '../index';
+import { TransformResult } from '../plugin';
 
-export function transformMiddleware(): NextHandleFunction {
+export function transformMiddleware(server: JarvisDevServer): NextHandleFunction {
   return async function viteTransformMiddleware(req, res, next) {
     if (req.method !== 'GET') {
       return next();
@@ -13,34 +12,26 @@ export function transformMiddleware(): NextHandleFunction {
 
     const url: string = req.url!;
 
-    if (isJSRequest(url)) {
-      const result = await doTransform(url);
-      if (result) {
-        // const code = result.code;
-        const code = getCodeWithSourcemap(result.code, result.map);
-        res.setHeader('Content-Type', 'application/javascript');
-        return res.end(code);
+    if (isJSRequest(url) || isCssRequest(url)) {
+      const file = url.startsWith('/') ? '.' + url : url;
+      let code: string = await readFile(file, 'utf-8');
+
+      for (const plugin of server.plugins) {
+        if (!plugin.transform) continue;
+        let result: TransformResult;
+        try {
+          result = await plugin.transform(code, url);
+        } catch (e) {
+          console.error(e);
+        }
+        // --- if false, the hook CANNOT be resolved --- 
+        if (!result) continue;
+        // --- overwrite the previous transform ---
+        code = result;
       }
+      res.setHeader('Content-Type', 'application/javascript');
+      return res.end(code);
     }
-
     next();
-  };
-}
-
-export async function doTransform(url: string) {
-  const extname = path.extname(url).slice(1);
-  const file = url.startsWith('/') ? '.' + url : url;
-  const rawCode = await readFile(file, 'utf-8');
-
-  const { code, map } = await transform(rawCode, {
-    target: 'esnext',
-    format: 'esm',
-    sourcemap: true,
-    loader: extname as 'js' | 'ts' | 'jsx' | 'tsx',
-  });
-
-  return {
-    code,
-    map,
   };
 }

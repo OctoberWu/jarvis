@@ -1,9 +1,8 @@
-
 import { Plugin } from "../server/plugin"
+import { cssPlugin, cssPostPlugin } from './css';
 import { staticPlugin } from "./static";
-import { cssPlugin } from './css';
-import { transformPlugin } from "./transfrom";
+import { esbuildPlugin } from "./esbuild";
 
 export function loadInternalPlugins(): Plugin[] {
-	return [transformPlugin(), cssPlugin(), staticPlugin()];
+	return [esbuildPlugin(), cssPlugin(), cssPostPlugin(), staticPlugin()];
 }

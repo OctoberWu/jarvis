@@ -5,6 +5,6 @@ export function staticPlugin(): Plugin {
 	return {
 		configureServer(server) {
 			server.app.use(staticMiddleware());
-		}
+		},
 	};
 }
