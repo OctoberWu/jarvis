@@ -18,7 +18,3 @@ pnpm add <package> --dev
 ```
 
 --- 
-Dev. Reflection: 
-===
-Requirement 1: launch a dev server 
-> launch a server, which supports response the requests for static, css and ts/js(transform) resources

@@ -1,21 +1,33 @@
 import connect from 'connect';
 import http from 'http';
 
-import { staticMiddleware } from './middlewares/static';
-import { cssMiddleware } from './middlewares/css';
-import { transformMiddleware } from './middlewares/transform';
+import { loadInternalPlugins } from '../plugins';
+import { Plugin } from './plugin';
+import { resolveConfig, ResolvedConfig } from '../config';
+
+export interface JarvisDevServer {
+	plugins: Plugin[];
+	app: connect.Server;
+	config: ResolvedConfig;
+}
 
 export async function createServer() {
+	const config = await resolveConfig();
+
+	const plugins = [...(config?.plugins || []), ...loadInternalPlugins()];
 	const app = connect();
 
-	// --- middleware test ---
-	// app.use(function (_, res) {
-	// 	res.end('Hello from JARVIS');
-	// })
+	// --- launch a server ---
+	const server: JarvisDevServer = {
+		plugins,
+		app,
+		config,
+	}
 
-	app.use(staticMiddleware());
-	app.use(cssMiddleware());
-	app.use(transformMiddleware());
+	for (const plugin of plugins) {
+		plugin.configureServer?.(server);
+	}
+
 
 	http.createServer(app).listen(3388);
 	console.log('serve at http://localhost:3388');
