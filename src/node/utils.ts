@@ -1,11 +1,11 @@
-const knownJsSrcRE = /\.((j|t)sx?)$/;
+const JS_TYPE_RE = /\.((j|t)sx?)$|\.mjs$/;
 export const isJSRequest = (url: string): boolean => {
   url = cleanUrl(url);
-  return knownJsSrcRE.test(url);
+  return JS_TYPE_RE.test(url);
 };
 
-const cssLangRE = new RegExp(/\.css$/);
-export const isCssRequest = (request: string): boolean => cssLangRE.test(request);
+const CSS_TYPE_RE = new RegExp(/\.css$/);
+export const isCssRequest = (request: string): boolean => CSS_TYPE_RE.test(request);
 
 export const queryRE = /\?.*$/s;
 export const hashRE = /#.*$/s;
