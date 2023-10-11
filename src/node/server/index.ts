@@ -1,10 +1,11 @@
-import connect from 'connect';
-import http from 'http';
+import connect from 'connect'
+import http from 'http'
+import colors from 'picocolors'
 
-import { loadInternalPlugins } from '../plugins';
-import { Plugin } from './plugin';
-import { resolveConfig, ResolvedConfig } from '../config';
-import { transformMiddleware } from './middlewares/transform';
+import { loadInternalPlugins } from '../plugins'
+import { Plugin } from './plugin'
+import { resolveConfig, ResolvedConfig } from '../config'
+import { transformMiddleware } from './middlewares/transform'
 
 export interface JarvisDevServer {
 	plugins: Plugin[];
@@ -33,5 +34,5 @@ export async function createServer() {
 
 
 	http.createServer(app).listen(3388);
-	console.log('serve at http://localhost:3388');
+	console.log(colors.yellow('serve at http://localhost:3388'))
 }

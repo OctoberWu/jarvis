@@ -27,11 +27,13 @@
   },
   "dependencies": {
     "@types/connect": "^3.4.36",
+    "cac": "^6.7.14",
     "connect": "^3.7.0",
     "esbuild": "^0.19.3",
     "esno": "^0.17.0",
     "fs-extra": "10.1.0",
     "less": "^4.2.0",
+    "picocolors": "^1.0.0",
     "postcss": "^8.4.30",
     "postcss-import": "^15.1.0",
     "sirv": "^2.0.3"
